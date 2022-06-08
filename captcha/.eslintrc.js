@@ -18,5 +18,6 @@ module.exports = {
     'react',
   ],
   rules: {
+    'max-len': [2, 80, 4, { ignoreUrls: true }],
   },
 };

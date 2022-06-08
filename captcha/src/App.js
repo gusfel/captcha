@@ -1,8 +1,16 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
+const numbers = {
+  1: 'ONE',
+  2: 'TWO',
+  3: 'THREE',
+  4: 'FOUR',
+  5: 'FIVE',
+  6: 'SIX',
+};
 const photos = {
   ONE:
   'https://images.pexels.com/photos/2249528/pexels-photo-2249528.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -22,8 +30,32 @@ function App() {
   return <Captcha />;
 }
 function Block({ number, success }) {
-  const topRow = ['ONE', 'TWO', 'THREE'];
-  const bottomRow = ['FOUR', 'FIVE', 'SIX'];
+  const [topRow, setTopRow] = useState([]);
+  const [bottomRow, setBottomRow] = useState([]);
+
+  const updateRows = () => {
+    const nums = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'];
+    const tempTop = [];
+    const tempBot = [];
+    while (nums.length > 3) {
+      const index = Math.floor(Math.random() * nums.length);
+      const val = nums[index];
+      nums.splice(index, 1);
+      tempTop.push(val);
+    }
+    while (nums.length) {
+      const index = Math.floor(Math.random() * nums.length);
+      const val = nums[index];
+      nums.splice(index, 1);
+      tempBot.push(val);
+    }
+    setTopRow(tempTop);
+    setBottomRow(tempBot);
+  };
+
+  useEffect(() => {
+    updateRows();
+  }, []);
 
   const handleClick = (e) => {
     const { name } = e.target;
@@ -34,7 +66,18 @@ function Block({ number, success }) {
     }
   };
 
-  const makeRow = (arr) => arr.map((val) => <input type="image" alt="" key={val} name={val} src={photos[val]} width="100" height="100" onClick={(e) => handleClick(e)} />);
+  const makeRow = (arr) => arr.map((val) => (
+    <input
+      type="image"
+      alt=""
+      key={val}
+      name={val}
+      src={photos[val]}
+      width="100"
+      height="100"
+      onClick={(e) => handleClick(e)}
+    />
+  ));
 
   return (
     <div>
@@ -51,20 +94,12 @@ function Block({ number, success }) {
 function Captcha() {
   const [correct, setCorrect] = useState(true);
   const [number, setNumber] = useState(0);
-  const numbers = {
-    1: 'ONE',
-    2: 'TWO',
-    3: 'THREE',
-    4: 'FOUR',
-    5: 'FIVE',
-    6: 'SIX',
-  };
 
   const getNumber = () => {
     setNumber(numbers[Math.floor(Math.random() * 6) + 1]);
   };
 
-  const handleClick = async () => {
+  const handleClick = () => {
     getNumber();
     setCorrect(false);
   };
